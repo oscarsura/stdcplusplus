@@ -7,7 +7,7 @@
 #include "wikiscraper.h"
 
 static const std::string sentinel = "/wiki/";
-std::unordered_set<std::string> findWikiLinks(const std::string& page_content) {
+std::unordered_set<std::string> WikiScraper::findWikiLinks(const std::string& page_content) {
     std::string html = page_content;
     std::istringstream iss(html);
 
@@ -37,12 +37,11 @@ WikiScraper::WikiScraper() {
 #endif
 }
 
-
-std::string createPageUrl(const std::string& page_name) {
+std::string WikiScraper::createPageUrl(const std::string& page_name) {
     return "https://en.wikipedia.org/wiki/" + page_name;
 }
 
-void notFoundError(const std::string& msg, const std::string& page_name, const std::string& url) {
+void WikiScraper::notFoundError(const std::string& msg, const std::string& page_name, const std::string& url) {
     const std::string title = "    AN ERROR OCCURED DURING EXECUTION.    ";
     const std::string border(title.size() + 4, '*');
     std::cerr << std::endl;
