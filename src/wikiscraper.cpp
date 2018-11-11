@@ -1,12 +1,20 @@
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 #include <unordered_map>
 #include <unordered_set>
 #include "error.h"
 #include "wikiscraper.h"
 
+static const std::string sentinel = "/wiki/";
 std::unordered_set<std::string> findWikiLinks(const std::string& page_content) {
+    std::string html = page_content;
+    std::istringstream iss(html);
 
+    std::string line;
+    while (iss >> line) {
+        std::cout << line << std::endl;
+    }
     return {};
 }
 
