@@ -15,6 +15,7 @@ std::unordered_set<std::string> WikiScraper::findWikiLinks(const std::string& pa
     while (iss >> line) {
         std::cout << line << std::endl;
     }
+    std::cout << "should have printed the whole file" << std::endl;
     return {};
 }
 
@@ -79,6 +80,7 @@ std::string WikiScraper::getPageSource(const std::string& page_name) {
             return ret.substr(0, indx);
         }
         page_cache[page_name] = ret;
+        std::cout << ret << std::endl;
     }
     return page_cache[page_name];
 }

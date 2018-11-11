@@ -26,6 +26,8 @@ using std::unordered_set;
  *       https://en.wikipedia.org/wiki/Stanford_University
  */
 vector<string> findWikiLadder(const string& start_page, const string& end_page) {
+    WikiScraper ws;
+    std::cout << ws.getPageSource("https://en.wikipedia.org/wiki/Stanford_University") << std::endl;
     return {};
 }
 

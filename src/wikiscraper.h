@@ -24,9 +24,9 @@ public:
      * on the given HTML page, according to the specified criterion.
      */
     std::unordered_set<std::string> getLinkSet(const std::string& page_name);
-
-private:
     std::string getPageSource(const std::string& page_name);
+private:
+    //std::string getPageSource(const std::string& page_name);
     std::string createPageUrl(const std::string& page_name);
     void notFoundError(const std::string& msg, const std::string& page_name, const std::string& url);
 
