@@ -6,17 +6,37 @@
 #include "error.h"
 #include "wikiscraper.h"
 
-static const std::string sentinel = "/wiki/";
-std::unordered_set<std::string> WikiScraper::findWikiLinks(const std::string& page_content) {
-    std::string html = page_content;
-    std::istringstream iss(html);
+const std::string sentinel = "/wiki/";
+const std::string href_start = "href=\"";
+const char href_end  = '"';
+void WikiScraper::parseForLinks(std::unordered_set<std::string>& links, const std::string& line) {
+    std::string parsedLine = std::string(line);
+    while (true) {
+        auto beginIt = std::search(parsedLine.begin(), parsedLine.end(), href_start.begin(), href_start.end());
+        if (beginIt == parsedLine.end()) break;
+        auto endIt = std::find(beginIt + static_cast<int>(href_start.length()), parsedLine.end(), href_end);
+        if (endIt == parsedLine.end()) break;
 
-    std::string line;
-    while (iss >> line) {
-        std::cout << line << std::endl;
+        std::string link = std::string(beginIt + static_cast<int>(href_start.length()), endIt);
+        if (!std::any_of(link.begin(), link.end(), [](char ch) { return ch == ':'; })) {
+            auto it = std::search(link.begin(), link.end(), sentinel.begin(), sentinel.end());
+            if (it == link.begin()) {
+                links.insert(link);
+            }
+        }
+        parsedLine = std::string(endIt, parsedLine.end());
     }
-    std::cout << "should have printed the whole file" << std::endl;
-    return {};
+}
+
+
+std::unordered_set<std::string> WikiScraper::findWikiLinks(const std::string& page_content) {
+    std::unordered_set<std::string> links = {};
+    std::istringstream iss(page_content);
+    std::string line = "";
+    while (iss >> line) {
+        parseForLinks(links, line);
+    }
+    return links;
 }
 
 std::unordered_set<std::string> WikiScraper::getLinkSet(const std::string& page_name) {
@@ -80,7 +100,7 @@ std::string WikiScraper::getPageSource(const std::string& page_name) {
             return ret.substr(0, indx);
         }
         page_cache[page_name] = ret;
-        std::cout << ret << std::endl;
+        //std::cout << ret << std::endl;
     }
     return page_cache[page_name];
 }
