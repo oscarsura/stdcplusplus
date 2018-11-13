@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <unordered_set>
 #include <vector>
@@ -26,7 +27,17 @@ using std::unordered_set;
  *       https://en.wikipedia.org/wiki/Stanford_University
  */
 vector<string> findWikiLadder(const string& start_page, const string& end_page) {
-    WikiScraper ws;
+    WikiScraper scraper;
+    std::unordered_set<std::string> target_set = scraper.getLinkSet(end_page);
+    auto comparison = [&scraper, &target_set](std::vector<std::string>& s1, std::vector<std::string>& s2) {
+        std::string page_name1 = s1.at(s1.size() - 1);
+        std::string page_name2 = s2.at(s2.size() - 1);
+        std::unordered_set<std::string> set1 = scraper.getLinkSet(page_name1);
+        std::unordered_set<std::string> set2 = scraper.getLinkSet(page_name2);
+
+        std::unordered_set<std::string> set_union;
+        std::set_intersection(set1.begin(), set1.end(), target_set.begin(), target_set.end(), std::back_inserter(set_union));
+    };
     return {};
 }
 

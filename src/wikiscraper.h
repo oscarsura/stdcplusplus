@@ -12,11 +12,6 @@ public:
     WikiScraper();
 
     /*
-     * TODO: comment
-     */
-    std::unordered_set<std::string> findWikiLinks(const std::string& page_content);
-
-    /*
      * Method: getLinkSet
      * Usage: std::unordered_set<std::string> links = getLinkSet(htmlPage);
      * --------------------------------------------------------------------
@@ -25,12 +20,12 @@ public:
      */
     std::unordered_set<std::string> getLinkSet(const std::string& page_name);
 
+private:
     /*
      * TODO: comment
-     * Usage: this function will parse a link for [1,n] number of valid wiki links
      */
     void parseForLinks(std::unordered_set<std::string>& links, const std::string &line);
-private:
+    std::unordered_set<std::string> findWikiLinks(const std::string& page_content);
     std::string getPageSource(const std::string& page_name);
     std::string createPageUrl(const std::string& page_name);
     void notFoundError(const std::string& msg, const std::string& page_name, const std::string& url);
