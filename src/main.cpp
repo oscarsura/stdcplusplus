@@ -35,8 +35,11 @@ vector<string> findWikiLadder(const string& start_page, const string& end_page) 
         std::unordered_set<std::string> set1 = scraper.getLinkSet(page_name1);
         std::unordered_set<std::string> set2 = scraper.getLinkSet(page_name2);
 
-        std::unordered_set<std::string> set_union;
-        std::set_intersection(set1.begin(), set1.end(), target_set.begin(), target_set.end(), std::back_inserter(set_union));
+        std::unordered_set<std::string> set_union1;
+        std::unordered_set<std::string> set_union2;
+        std::set_intersection(set1.begin(), set1.end(), target_set.begin(), target_set.end(), std::back_inserter(set_union1));
+        std::set_intersection(set2.begin(), set2.end(), target_set.begin(), target_set.end(), std::back_inserter(set_union2));
+        return set_union1.size() < set_union2.size();
     };
     return {};
 }
