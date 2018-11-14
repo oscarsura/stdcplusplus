@@ -41,23 +41,22 @@ vector<string> findWikiLadder(const string& start_page, const string& end_page) 
 
         std::unordered_set<std::string> set_union1;
         std::unordered_set<std::string> set_union2;
-        std::set_intersection(set1.begin(), set1.end(), target_set.begin(), target_set.end(), std::back_inserter(set_union1));
-        std::set_intersection(set2.begin(), set2.end(), target_set.begin(), target_set.end(), std::back_inserter(set_union2));
+        std::set_intersection(set1.begin(), set1.end(), target_set.begin(), target_set.end(), std::inserter(set_union1,set_union1.begin()));
+        std::set_intersection(set2.begin(), set2.end(), target_set.begin(), target_set.end(), std::inserter(set_union1,set_union2.begin()));
         return set_union1.size() < set_union2.size();
     };
 
-    std::priority_queue<std::string, std::vector<std::vector<std::string> >, cmp_t> ladderQueue(comparison);
-    ladderQueue.push(start_page);
+    std::priority_queue<std::vector<std::string>, std::vector<std::vector<std::string> >, cmp_t> ladderQueue(comparison);
+    ladderQueue.push({start_page});
 
     std::unordered_set<std::string> visitedLinks;
     while (!ladderQueue.empty()) {
         std::vector<std::string> curr = ladderQueue.top();
         ladderQueue.pop();
-
-        std::unordered_set<std::string> currLinkSet = scraper.getLinkSet(curr.at(curr.size() - 1));
+        std::unordered_set<std::string> currLinkSet = scraper.getLinkSet(*(curr.end() - 1));
 
         //end case
-        if (std::find(currLinkSet.begin(), currLinkSet.end(), end_page) != currLinkSet.end()) {
+        if (std::find(currLinkSet.begin(), currLinkSet.end(), "/wiki/" + end_page) != currLinkSet.end()) {
             curr.push_back(end_page);
             return curr;
         }
@@ -65,27 +64,31 @@ vector<string> findWikiLadder(const string& start_page, const string& end_page) 
         //continue search
         for (std::string str : currLinkSet) {
             if (std::find(visitedLinks.begin(), visitedLinks.end(), str) == visitedLinks.end()) {
-                std::vector<std::string> newLadder = ladderQueue;
+                std::vector<std::string> newLadder = curr;
                 newLadder.push_back(str);
                 ladderQueue.push(newLadder);
+                visitedLinks.insert(str);
             }
         }
     }
     return {};
 }
 
+const static std::string kLadderNotFound = "No ladder was found!";
+const static std::string kLadderFound = "Ladder was from from: ";
+const static int kDefaultStatus = 0;
 int main() {
-    auto ladder = findWikiLadder("Fruit", "Strawberry");
-    cout << endl;
+    std::vector<std::string> ladder = findWikiLadder("Fruit", "Strawberry");
 
     if(ladder.empty()) {
-        cout << "No ladder found!" << endl;
+       std::cout << kLadderNotFound << std::endl;
     } else {
-        cout << "Ladder found:" << endl;
-        cout << "\t";
-
-        // Print the ladder here!
+        std::cout << kLadderFound << std::endl;
+        for (auto it = ladder.begin(); it != ladder.end(); ++it) {
+            std::cout << *it;
+            if ((it + 1) != ladder.end()) std::cout <<" -> ";
+        }
+        std::cout << std::endl;
     }
-
-    return 0;
+    return kDefaultStatus;
 }
