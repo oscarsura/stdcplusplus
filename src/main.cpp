@@ -85,7 +85,7 @@ const static std::string kLadderNotFound = "No ladder was found!";
 const static std::string kLadderFound = "Ladder was from from: ";
 const static int kDefaultStatus = 0;
 int main() {
-    std::vector<std::string> ladder = findWikiLadder("Emu", "_Berkeley");
+    std::vector<std::string> ladder = findWikiLadder("Milkshake", "DNA");
 
     if(ladder.empty()) {
        std::cout << kLadderNotFound << std::endl;
