@@ -46,7 +46,21 @@ vector<string> findWikiLadder(const string& start_page, const string& end_page) 
         return set_union1.size() < set_union2.size();
     };
 
-    std::priority_queue<std::string, vector<vector<string> >, cmp_t> ladderQueue(comparison);
+    std::priority_queue<std::string, std::vector<std::vector<std::string> >, cmp_t> ladderQueue(comparison);
+    ladderQueue.push(start_page);
+
+    while (!ladderQueue.empty()) {
+        std::vector<std::string> curr = ladderQueue.top();
+        ladderQueue.pop();
+
+        std::unordered_set<std::string> currLinkSet = scraper.getLinkSet(curr.at(curr.size() - 1));
+
+        //end case
+        if (std::find(currLinkSet.begin(), currLinkSet.end(), end_page) != currLinkSet.end()) {
+            curr.push_back(end_page);
+            return curr;
+        }
+    }
     return {};
 }
 
