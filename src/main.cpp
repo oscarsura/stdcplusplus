@@ -26,10 +26,14 @@ using std::unordered_set;
  *
  *       https://en.wikipedia.org/wiki/Stanford_University
  */
+
 vector<string> findWikiLadder(const string& start_page, const string& end_page) {
+    using cmp_t = std::function<unsigned long(std::vector<std::string>&, std::vector<std::string>&)>;
+
     WikiScraper scraper;
     std::unordered_set<std::string> target_set = scraper.getLinkSet(end_page);
-    auto comparison = [&scraper, &target_set](std::vector<std::string>& s1, std::vector<std::string>& s2) {
+    cmp_t comparison = [&scraper, &target_set](std::vector<std::string>& s1,
+                                              std::vector<std::string>& s2) {
         std::string page_name1 = s1.at(s1.size() - 1);
         std::string page_name2 = s2.at(s2.size() - 1);
         std::unordered_set<std::string> set1 = scraper.getLinkSet(page_name1);
@@ -41,6 +45,8 @@ vector<string> findWikiLadder(const string& start_page, const string& end_page) 
         std::set_intersection(set2.begin(), set2.end(), target_set.begin(), target_set.end(), std::back_inserter(set_union2));
         return set_union1.size() < set_union2.size();
     };
+
+    std::priority_queue<std::string, vector<vector<string> >, cmp_t> ladderQueue(comparison);
     return {};
 }
 
