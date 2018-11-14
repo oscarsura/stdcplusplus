@@ -49,6 +49,7 @@ vector<string> findWikiLadder(const string& start_page, const string& end_page) 
     std::priority_queue<std::string, std::vector<std::vector<std::string> >, cmp_t> ladderQueue(comparison);
     ladderQueue.push(start_page);
 
+    std::unordered_set<std::string> visitedLinks;
     while (!ladderQueue.empty()) {
         std::vector<std::string> curr = ladderQueue.top();
         ladderQueue.pop();
@@ -59,6 +60,15 @@ vector<string> findWikiLadder(const string& start_page, const string& end_page) 
         if (std::find(currLinkSet.begin(), currLinkSet.end(), end_page) != currLinkSet.end()) {
             curr.push_back(end_page);
             return curr;
+        }
+
+        //continue search
+        for (std::string str : currLinkSet) {
+            if (std::find(visitedLinks.begin(), visitedLinks.end(), str) == visitedLinks.end()) {
+                std::vector<std::string> newLadder = ladderQueue;
+                newLadder.push_back(str);
+                ladderQueue.push(newLadder);
+            }
         }
     }
     return {};
