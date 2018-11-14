@@ -6,9 +6,9 @@
 #include "error.h"
 #include "wikiscraper.h"
 
-const std::string sentinel = "/wiki/";
-const std::string href_start = "href=\"";
+const std::string href_start = "href=\"/wiki/";
 const char href_end  = '"';
+
 void WikiScraper::parseForLinks(std::unordered_set<std::string>& links, const std::string& line) {
     std::string parsedLine = std::string(line);
     while (true) {
@@ -19,10 +19,7 @@ void WikiScraper::parseForLinks(std::unordered_set<std::string>& links, const st
 
         std::string link = std::string(beginIt + static_cast<int>(href_start.length()), endIt);
         if (!std::any_of(link.begin(), link.end(), [](char ch) { return ch == ':'; })) {
-            auto it = std::search(link.begin(), link.end(), sentinel.begin(), sentinel.end());
-            if (it == link.begin()) {
-                links.insert(link);
-            }
+            links.insert(link);
         }
         parsedLine = std::string(endIt, parsedLine.end());
     }
@@ -31,11 +28,7 @@ void WikiScraper::parseForLinks(std::unordered_set<std::string>& links, const st
 
 std::unordered_set<std::string> WikiScraper::findWikiLinks(const std::string& page_content) {
     std::unordered_set<std::string> links = {};
-    std::istringstream iss(page_content);
-    std::string line = "";
-    while (iss >> line) {
-        parseForLinks(links, line);
-    }
+    parseForLinks(links, page_content);
     return links;
 }
 

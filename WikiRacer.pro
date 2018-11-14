@@ -18,6 +18,8 @@ QMAKE_CXXFLAGS += -std=c++11 \
     -Werror=return-type \
     -Wunreachable-code \
 
+QMAKE_CXXFLAGS_RELEASE += -O3
+
 # Copies the given files to the destination directory
 # The rest of this file defines how to copy the resources folder
 defineTest(copyToDestdir) {

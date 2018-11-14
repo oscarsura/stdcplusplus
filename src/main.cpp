@@ -27,6 +27,16 @@ using std::unordered_set;
  *       https://en.wikipedia.org/wiki/Stanford_University
  */
 
+unsigned long count_union(const std::unordered_set<std::string>& s1, const std::unordered_set<std::string>& s2) {
+    unsigned long num = 0;
+    for (auto& elem : s1) {
+        if (std::find(s2.begin(), s2.end(), elem) != s2.end()) {
+            num++;
+        }
+    }
+    return num;
+}
+
 vector<string> findWikiLadder(const string& start_page, const string& end_page) {
     using cmp_t = std::function<unsigned long(std::vector<std::string>&, std::vector<std::string>&)>;
 
@@ -39,11 +49,7 @@ vector<string> findWikiLadder(const string& start_page, const string& end_page) 
         std::unordered_set<std::string> set1 = scraper.getLinkSet(page_name1);
         std::unordered_set<std::string> set2 = scraper.getLinkSet(page_name2);
 
-        std::unordered_set<std::string> set_union1;
-        std::unordered_set<std::string> set_union2;
-        std::set_intersection(set1.begin(), set1.end(), target_set.begin(), target_set.end(), std::inserter(set_union1,set_union1.begin()));
-        std::set_intersection(set2.begin(), set2.end(), target_set.begin(), target_set.end(), std::inserter(set_union1,set_union2.begin()));
-        return set_union1.size() < set_union2.size();
+        return count_union(set1, target_set) < count_union(set2, target_set);
     };
 
     std::priority_queue<std::vector<std::string>, std::vector<std::vector<std::string> >, cmp_t> ladderQueue(comparison);
@@ -53,10 +59,11 @@ vector<string> findWikiLadder(const string& start_page, const string& end_page) 
     while (!ladderQueue.empty()) {
         std::vector<std::string> curr = ladderQueue.top();
         ladderQueue.pop();
-        std::unordered_set<std::string> currLinkSet = scraper.getLinkSet(*(curr.end() - 1));
+
+        std::unordered_set<std::string> currLinkSet = scraper.getLinkSet(curr.at(curr.size() - 1));
 
         //end case
-        if (std::find(currLinkSet.begin(), currLinkSet.end(), "/wiki/" + end_page) != currLinkSet.end()) {
+        if (std::find(currLinkSet.begin(), currLinkSet.end(), end_page) != currLinkSet.end()) {
             curr.push_back(end_page);
             return curr;
         }
@@ -78,7 +85,7 @@ const static std::string kLadderNotFound = "No ladder was found!";
 const static std::string kLadderFound = "Ladder was from from: ";
 const static int kDefaultStatus = 0;
 int main() {
-    std::vector<std::string> ladder = findWikiLadder("Fruit", "Strawberry");
+    std::vector<std::string> ladder = findWikiLadder("Emu", "_Berkeley");
 
     if(ladder.empty()) {
        std::cout << kLadderNotFound << std::endl;
